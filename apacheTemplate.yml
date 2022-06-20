@@ -1,0 +1,32 @@
+---
+- hosts: rhelservers
+  become: yes
+  vars:
+    content_dir: /webcontent
+    http_port: 8080
+    admin: spatterson
+  tasks:
+    - name: Install latest version of Apache
+      dnf:
+        name: httpd
+        state: latest
+    - name: Creating webroot /webcontent
+      shell:
+        cmd: mkdir /webcontent
+    - name: Push Apache Template to RHEL Servers
+      template:
+        src: /home/spatterson/ansible/templates/httpd.conf.j2
+        dest: /etc/httpd/conf/httpd.conf
+        backup: yes
+      notify: "restart apache"
+    - name: Push index.html Template
+      template:
+        src: /home/spatterson/ansible/templates/index1.html.j2
+        dest: /webcontent/index.html
+  handlers:
+    - name: Restart and enable Apache service
+      service:
+        name: httpd
+        enabled: yes
+        state: restarted
+      listen: "restart apache"

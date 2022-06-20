@@ -1,0 +1,10 @@
+---
+all:
+  hosts:
+    rhel8-02.example.com:
+    rhel8-03.example.com:
+  children:
+    rhelservers:
+      hosts:
+        rhel8-02.example.com:
+        rhel8-03.example.com:
